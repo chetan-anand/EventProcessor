@@ -10,7 +10,16 @@ import java.util.UUID;
  * Created by chetan.anand on 3/16/17.
  */
 public class TestProduce {
+    private static final int no_of_partitions = 5;
     public static void main(String[] args) {
+        Producer<String, String> producer = new KafkaProducer<String, String>(getProducerProperties());
+        for(int i = 0; i < 100; i++) {
+            producer.send(new ProducerRecord<String, String>("sales_receipts", String.valueOf(i % no_of_partitions), Mock.getMockBillJson(i % no_of_partitions)));
+        }
+        producer.close();
+    }
+
+    private static Properties getProducerProperties(){
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
         props.put("acks", "all");
@@ -20,11 +29,8 @@ public class TestProduce {
         props.put("buffer.memory", 33554432);
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        Producer<String, String> producer = new KafkaProducer<String, String>(props);
-        for(int i = 0; i < 100; i++) {
-            producer.send(new ProducerRecord<String, String>("sales_receipts", String.valueOf(i % 10), Mock.getMockBillJson(i % 10)));
-        }
-        producer.close();
-
+        return props;
     }
+
+
 }
