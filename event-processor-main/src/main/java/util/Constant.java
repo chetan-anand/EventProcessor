@@ -12,6 +12,8 @@ public class Constant {
 
     public static final Long PollTimeout = 20000l;
 
+    public static final Integer NO_OF_PARTITION = 5;
+
     public static Properties getConsumerProperties(){
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");

@@ -6,6 +6,7 @@ import util.Constant;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -16,25 +17,28 @@ import java.util.Date;
  */
 public class PrallelEventProcessor implements Runnable {
 
-    private int partitionId;
+    private int threadId;
+    private KafkaConsumer<String,String> consumer;
+    private List<String> topicList;
 
-    public PrallelEventProcessor(int partitionId){
-        this.partitionId = partitionId;
+    public PrallelEventProcessor(int threadId, List<String> topicList){
+        this.threadId = threadId;
+        this.consumer = new KafkaConsumer<String, String>(Constant.getConsumerProperties());
+        this.topicList = topicList;
+        consumer.subscribe(topicList);
     }
 
     public void run() {
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(Constant.getConsumerProperties());
-        consumer.subscribe(Arrays.asList(Constant.TOPIC_NAME));
         while(true) {
             ConsumerRecords<String, String> records = consumer.poll(Constant.PollTimeout);
-            System.out.println(records.count());
             for (ConsumerRecord<String, String> record : records) {
-                System.out.println("topic = " + record.topic());
-                System.out.println("partition = " + record.partition());
-                System.out.println("offset = " + record.offset());
-                System.out.println(consumer.endOffsets(Arrays.asList(new TopicPartition(record.topic(), 0))));
-                System.out.println(record.value());
-                System.out.println(new Date(Constant.getPeriodicTimeStamp(record.timestamp(),Constant.TimePeriod)));
+                System.out.print("topic=" + record.topic());
+                System.out.print(" partition=" + record.partition());
+                System.out.print(" thread=" + threadId);
+                System.out.println(" offset=" + record.offset());
+                //System.out.println(consumer.endOffsets(Arrays.asList(new TopicPartition(record.topic(), 0))));
+                //System.out.println(record.value());
+                //System.out.println(new Date(Constant.getPeriodicTimeStamp(record.timestamp(),Constant.TimePeriod)));
             }
         }
     }
