@@ -1,5 +1,0 @@
-util/Constant.class
-dto/SaleReciept.class
-ConsumerQueue.class
-ProcessorStart.class
-PrallelEventProcessor.class
