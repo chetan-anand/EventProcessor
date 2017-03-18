@@ -7,11 +7,11 @@ import java.util.Properties;
  */
 public class Constant {
 
-    public static final String TOPIC_NAME = "sales_receipts_test";
+    public static final String TOPIC_NAME = "sales_receipts";
 
     public static final Long TimePeriod = 1000l;
 
-    public static Properties getProducerProperties(){
+    public static Properties getProducerProperties() {
         Properties props = new Properties();
         props.put("bootstrap.servers", "localhost:9092");
         props.put("acks", "all");
@@ -21,7 +21,7 @@ public class Constant {
         props.put("buffer.memory", 33554432);
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("block.on.buffer.full",true);
+        props.put("block.on.buffer.full", true);
         return props;
     }
 }

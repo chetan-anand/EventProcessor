@@ -10,6 +10,6 @@ import java.util.concurrent.TimeUnit;
 public class TestProduce {
     public static void main(String[] args) {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
-        scheduledExecutorService.scheduleAtFixedRate(new EventProducer(),0,Constant.TimePeriod, TimeUnit.MILLISECONDS);
+        scheduledExecutorService.scheduleAtFixedRate(new EventProducer(), 0, Constant.TimePeriod, TimeUnit.MILLISECONDS);
     }
 }

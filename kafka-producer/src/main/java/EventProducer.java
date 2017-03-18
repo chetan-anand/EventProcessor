@@ -16,8 +16,8 @@ public class EventProducer implements Runnable {
         Random random = new Random();
         int temp = Math.abs(random.nextInt());
         producer.send(new ProducerRecord<String, String>(
-                    Constant.TOPIC_NAME, String.valueOf(temp % NO_OF_PARTITION),
-                    Mock.getMockBillJson(temp % NO_OF_PARTITION)));
+                Constant.TOPIC_NAME, String.valueOf(temp % NO_OF_PARTITION),
+                Mock.getMockBillJson(temp % NO_OF_PARTITION)));
         producer.close();
     }
 }

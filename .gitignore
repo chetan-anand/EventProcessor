@@ -1,2 +1,4 @@
 /.idea
 *.iml
+/kafka-producer/target
+/event-processor-main/target

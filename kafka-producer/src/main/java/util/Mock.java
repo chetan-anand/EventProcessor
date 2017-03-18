@@ -14,13 +14,13 @@ import java.util.List;
 public class Mock {
     private static Gson gson = new Gson();
 
-    public static String getMockBillJson(int storeid){
+    public static String getMockBillJson(int storeid) {
         Item item = Item.builder()
                 .item_id(1)
                 .quantity(1)
                 .total_price_paid(1.0f)
                 .build();
-        List<Item> itemList= new ArrayList<Item>();
+        List<Item> itemList = new ArrayList<Item>();
         itemList.add(item);
         Bill mockBill = Bill.builder()
                 .items(itemList)
