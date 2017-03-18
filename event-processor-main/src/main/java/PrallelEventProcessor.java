@@ -1,12 +1,15 @@
+import com.google.gson.Gson;
+import dto.SaleReciept;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.TopicPartition;
+import util.Bill;
 import util.Constant;
+import util.Item;
 
-import java.util.Arrays;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,12 +17,15 @@ import java.util.List;
  *
  * This class create a Runnable kafka consumer. The input of
  * constructor is partitionId
+ *
+ * As mentioned in the design doc the number of consumer will be equal to number of partition.
  */
 public class PrallelEventProcessor implements Runnable {
 
     private int threadId;
     private KafkaConsumer<String,String> consumer;
     private List<String> topicList;
+    private Map<Integer, SaleReciept> saleRecieptHashMap = new HashMap<Integer, SaleReciept>();
 
     public PrallelEventProcessor(int threadId, List<String> topicList){
         this.threadId = threadId;
@@ -32,14 +38,39 @@ public class PrallelEventProcessor implements Runnable {
         while(true) {
             ConsumerRecords<String, String> records = consumer.poll(Constant.PollTimeout);
             for (ConsumerRecord<String, String> record : records) {
-                System.out.print("topic=" + record.topic());
-                System.out.print(" partition=" + record.partition());
-                System.out.print(" thread=" + threadId);
-                System.out.println(" offset=" + record.offset());
-                //System.out.println(consumer.endOffsets(Arrays.asList(new TopicPartition(record.topic(), 0))));
-                //System.out.println(record.value());
-                //System.out.println(new Date(Constant.getPeriodicTimeStamp(record.timestamp(),Constant.TimePeriod)));
+                processBillingEvent(record);
             }
+
+        }
+    }
+
+    private void processBillingEvent(ConsumerRecord<String,String> record){
+        Bill bill = new Gson().fromJson(record.value(), Bill.class);
+        Float totalSalePerStore = 0f;
+        for(Item item:bill.getItems()){
+            totalSalePerStore+=item.getTotal_price_paid();
+        }
+        Long bucketedTimeStamp = Constant.getBucketedTimeStamp(record.timestamp(),Constant.TimePeriod);
+        if(null != saleRecieptHashMap.get(bill.getStore_id())){
+            SaleReciept saleRecieptTemp = saleRecieptHashMap.get(bill.getStore_id());
+            if(saleRecieptTemp.getTimestamp() == bucketedTimeStamp){
+                saleRecieptTemp.setTotalSales(saleRecieptTemp.getTotalSales() + totalSalePerStore);
+            }else{
+                ConsumerQueue.saleRecieptQueue.offer(saleRecieptTemp);
+                SaleReciept saleReciept = SaleReciept.builder().storeId(bill.getStore_id())
+                        .timestamp(bucketedTimeStamp)
+                        .totalSales(totalSalePerStore)
+                        .offSet(record.offset())
+                        .build();
+                saleRecieptHashMap.put(bill.getStore_id(),saleReciept);
+            }
+        }else {
+            SaleReciept saleReciept = SaleReciept.builder().storeId(bill.getStore_id())
+                    .timestamp(bucketedTimeStamp)
+                    .totalSales(totalSalePerStore)
+                    .offSet(record.offset())
+                    .build();
+            saleRecieptHashMap.put(bill.getStore_id(),saleReciept);
         }
     }
 }

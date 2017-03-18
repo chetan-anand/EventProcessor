@@ -30,7 +30,7 @@ public class Constant {
      * @param Long
      * @return Returns the  buckuted time stamp according to  the timeperiod
      * */
-    public static Long getPeriodicTimeStamp(Long timeStamp, Long timePeriod){
+    public static Long getBucketedTimeStamp(Long timeStamp, Long timePeriod){
         return ( timeStamp - timeStamp%timePeriod );
     }
 }
