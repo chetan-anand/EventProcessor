@@ -1,5 +1,6 @@
 package dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  */
 
 @Data
+@Builder
 public class Bill {
     private Integer store_id;
     private Integer receipt_id;
