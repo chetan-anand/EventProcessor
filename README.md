@@ -10,7 +10,7 @@ Steps to test  the implementation.
  $ bin/zookeeper-server-start.sh config/zookeeper.properties
  
 3. Simlarly start the kafka brokerm by the following command.
-Before starting kafka broker, change the num.partitions to some positive integer. like i have done 5.
+Before starting kafka broker, change the num.partitions to some positive integer. like i have done 5.<hr>
 $ bin/kafka-server-start.sh config/server.properties
 
 4. Now in the project file go to TestProduce.java in kafka-produce folder
