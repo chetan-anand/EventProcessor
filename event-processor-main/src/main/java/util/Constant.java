@@ -6,7 +6,7 @@ import java.util.Properties;
  * Created by chetan.anand on 3/17/17.
  */
 public class Constant {
-    public static final String TOPIC_NAME = "sales_receipts";
+    public static final String TOPIC_NAME = "sales_receipts_test";
 
     public static final Long TimePeriod = 30000l;
 

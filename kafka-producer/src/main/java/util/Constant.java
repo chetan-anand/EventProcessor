@@ -7,7 +7,7 @@ import java.util.Properties;
  */
 public class Constant {
 
-    public static final String TOPIC_NAME = "sales_receipts";
+    public static final String TOPIC_NAME = "sales_receipts_test";
 
     public static final Long TimePeriod = 1000l;
 

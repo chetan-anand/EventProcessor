@@ -11,5 +11,6 @@
     <modules>
         <module>kafka-producer</module>
         <module>event-processor-main</module>
+        <module>event-processor-spark</module>
     </modules>
 </project>
